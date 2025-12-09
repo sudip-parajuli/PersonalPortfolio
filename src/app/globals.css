@@ -1,26 +1,46 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card-bg: var(--card-bg);
+  
+  /* Custom Palette */
+  --color-navy: #0a192f;
+  --color-navy-light: #112240;
+  --color-electric-blue: #64ffda;
+  --color-slate-muted: var(--slate-muted);
+  --color-warm-white: #f8f9fa;
+  --color-neon-purple: #b967ff;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a; /* Slate 900 */
+  --slate-muted: #475569; /* Slate 600 - darker for readability */
+  --card-bg: #f1f5f9;      /* Slate 100 */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0a192f;
+    --foreground: #e6f1ff;
+    --slate-muted: #8892b0;
+    --card-bg: rgba(17, 34, 64, 0.3);
   }
 }
 
+/* Support manual theme toggling */
+.dark {
+  --background: #0a192f;
+  --foreground: #e6f1ff;
+  --slate-muted: #8892b0;
+  --card-bg: rgba(17, 34, 64, 0.3);
+}
+
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
 }
