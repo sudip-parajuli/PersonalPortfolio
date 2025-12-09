@@ -6,8 +6,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { sendEmail } from "@/app/actions/send-email";
+import emailjs from "@emailjs/browser";
 import { Loader2, Send } from "lucide-react";
+
+// Configuration
+const SERVICE_ID = "service_23ck9bg";
+const TEMPLATE_ID = "template_vuhd7dg";
+const PUBLIC_KEY = "Q-tEt5cZ-JrI5zr22";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -25,21 +30,23 @@ export default function ContactSection() {
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
-    const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("email", data.email);
-    formData.append("message", data.message);
 
     try {
-      const result = await sendEmail(null, formData);
-      if (result.success) {
-        toast.success("Message sent successfully!");
-        reset();
-      } else {
-        toast.error("Failed to send message. Please try again.");
-      }
-    } catch (error) {
-      toast.error("Something went wrong.");
+      const templateParams = {
+        name: data.name,
+        email: data.email,
+        message: data.message,
+      };
+
+      await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
+      
+      toast.success("Message sent successfully!");
+      reset();
+    } catch (error: any) {
+      console.error("EmailJS Error:", error);
+      // Show useful error if possible
+      const errorMessage = error?.text || "Failed to send message. Please try again.";
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -72,7 +79,7 @@ export default function ContactSection() {
                 <label htmlFor="name" className="text-sm font-medium text-slate-300">Name</label>
                 <input 
                   {...register("name")}
-                  className="w-full bg-navy/50 dark:bg-navy/50 bg-white border border-slate-muted/20 dark:border-white/10 rounded-lg px-4 py-3 text-foreground focus:outline-none focus:border-electric-blue/50 focus:ring-1 focus:ring-electric-blue/50 transition-all placeholder:text-slate-400"
+                  className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-3 text-slate-900 dark:text-gray-100 focus:outline-none focus:border-electric-blue/50 focus:ring-1 focus:ring-electric-blue/50 transition-all placeholder:text-slate-400"
                   placeholder="John Doe"
                 />
                 {errors.name && <p className="text-red-400 text-xs">{errors.name.message}</p>}
@@ -81,7 +88,7 @@ export default function ContactSection() {
                 <label htmlFor="email" className="text-sm font-medium text-slate-300">Email</label>
                 <input 
                   {...register("email")}
-                  className="w-full bg-navy/50 dark:bg-navy/50 bg-white border border-slate-muted/20 dark:border-white/10 rounded-lg px-4 py-3 text-foreground focus:outline-none focus:border-electric-blue/50 focus:ring-1 focus:ring-electric-blue/50 transition-all placeholder:text-slate-400"
+                  className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-3 text-slate-900 dark:text-gray-100 focus:outline-none focus:border-electric-blue/50 focus:ring-1 focus:ring-electric-blue/50 transition-all placeholder:text-slate-400"
                   placeholder="john@example.com"
                 />
                 {errors.email && <p className="text-red-400 text-xs">{errors.email.message}</p>}
@@ -93,7 +100,7 @@ export default function ContactSection() {
               <textarea 
                 {...register("message")}
                 rows={5}
-                className="w-full bg-navy/50 dark:bg-navy/50 bg-white border border-slate-muted/20 dark:border-white/10 rounded-lg px-4 py-3 text-foreground focus:outline-none focus:border-electric-blue/50 focus:ring-1 focus:ring-electric-blue/50 transition-all placeholder:text-slate-400 resize-none"
+                className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-3 text-slate-900 dark:text-gray-100 focus:outline-none focus:border-electric-blue/50 focus:ring-1 focus:ring-electric-blue/50 transition-all placeholder:text-slate-400 resize-none"
                 placeholder="Tell me about your project..."
               />
               {errors.message && <p className="text-red-400 text-xs">{errors.message.message}</p>}
