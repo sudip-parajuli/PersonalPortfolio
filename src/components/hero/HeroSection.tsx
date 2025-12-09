@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Hero3D from "./Hero3D";
+import dynamic from "next/dynamic";
+const Hero3D = dynamic(() => import("./Hero3D"), { ssr: false });
 import { ArrowRight, Download, Github, Linkedin, Mail, Twitter } from "lucide-react";
 
 export default function HeroSection() {
